@@ -1,6 +1,7 @@
 /**
- * FastFlow v2.0 — Módulo de Notificações Web (Web Notifications API)
- * Avisos de meta atingida, contagem regressiva de 30 minutos, lembretes diários
+ * FastFlow v3.0 — Módulo de Notificações Unificado (Nativo Android via Capacitor & Web Notifications)
+ * Suporte a notificações locais em segundo plano (mesmo com celular bloqueado ou app fechado),
+ * avisos de meta atingida, contagem regressiva de 30 minutos, lembretes diários
  * e lembretes específicos de aplicação de caneta GLP-1 e hidratação.
  */
 
@@ -10,17 +11,63 @@ import { getMedicationInfo } from './glp1.js';
 let dailyReminderTimer = null;
 let glp1ReminderTimer = null;
 
+const NOTIF_ID_30M = 1001;
+const NOTIF_ID_TARGET = 1002;
+const NOTIF_ID_DAILY = 2001;
+const NOTIF_ID_GLP1 = 3001;
+
 /**
- * Verifica se a API de Notificações está disponível no navegador.
+ * Obtém o plugin de notificações nativas do Capacitor (quando rodando como APK Android).
+ */
+function getNativeNotifications() {
+  if (typeof window !== 'undefined' && window.Capacitor?.Plugins?.LocalNotifications) {
+    return window.Capacitor.Plugins.LocalNotifications;
+  }
+  return null;
+}
+
+/**
+ * Garante que o canal de notificação no Android exista com som e vibração.
+ */
+async function ensureNotificationChannel() {
+  const native = getNativeNotifications();
+  if (!native) return;
+  try {
+    await native.createChannel({
+      id: 'fastflow_alerts',
+      name: 'Alertas do FastFlow',
+      description: 'Lembretes de jejum, metas e hidratação',
+      importance: 5,
+      visibility: 1,
+      vibration: true
+    });
+  } catch (e) {
+    // Canal já existente ou não suportado
+  }
+}
+
+/**
+ * Verifica se a API de Notificações está disponível (seja nativa do Android ou do Navegador).
  */
 export function isNotificationSupported() {
+  if (getNativeNotifications()) return true;
   return 'Notification' in window;
 }
 
 /**
- * Verifica se o usuário já concedeu permissão.
+ * Verifica se o usuário já concedeu permissão de notificações.
  */
-export function hasNotificationPermission() {
+export async function hasNotificationPermission() {
+  const native = getNativeNotifications();
+  if (native) {
+    try {
+      const check = await native.checkPermissions();
+      return check.display === 'granted';
+    } catch (e) {
+      console.warn('[FastFlow Native Notifications] Erro ao checar permissão:', e);
+      return false;
+    }
+  }
   return isNotificationSupported() && Notification.permission === 'granted';
 }
 
@@ -28,6 +75,18 @@ export function hasNotificationPermission() {
  * Solicita permissão para exibir notificações ao usuário.
  */
 export async function requestNotificationPermission() {
+  const native = getNativeNotifications();
+  if (native) {
+    try {
+      await ensureNotificationChannel();
+      const res = await native.requestPermissions();
+      return res.display === 'granted';
+    } catch (error) {
+      console.warn('[FastFlow Native Notifications] Erro ao solicitar permissão:', error);
+      return false;
+    }
+  }
+
   if (!isNotificationSupported()) {
     return false;
   }
@@ -36,13 +95,13 @@ export async function requestNotificationPermission() {
     const permission = await Notification.requestPermission();
     return permission === 'granted';
   } catch (error) {
-    console.warn('[FastFlow Notifications] Erro ao solicitar permissão:', error);
+    console.warn('[FastFlow Notifications] Erro ao solicitar permissão web:', error);
     return false;
   }
 }
 
 /**
- * Dispara uma notificação para o usuário (via Service Worker ou construtor Notification).
+ * Dispara uma notificação imediata (Nativa no APK ou Web no Navegador).
  */
 export async function sendNotification(title, options = {}) {
   const { settings } = getState();
@@ -51,7 +110,29 @@ export async function sendNotification(title, options = {}) {
     return;
   }
 
-  if (!hasNotificationPermission()) {
+  const native = getNativeNotifications();
+  if (native) {
+    try {
+      await ensureNotificationChannel();
+      await native.schedule({
+        notifications: [
+          {
+            id: Math.floor(Math.random() * 800000) + 100000,
+            title,
+            body: options.body || '',
+            channelId: 'fastflow_alerts',
+            schedule: { at: new Date(Date.now() + 200), allowWhileIdle: true }
+          }
+        ]
+      });
+      return;
+    } catch (err) {
+      console.warn('[FastFlow Native Notifications] Falha ao despachar notificação nativa:', err);
+    }
+  }
+
+  // Fallback para Web Notifications (PWA no browser)
+  if (!isNotificationSupported() || Notification.permission !== 'granted') {
     return;
   }
 
@@ -75,7 +156,78 @@ export async function sendNotification(title, options = {}) {
 
     new Notification(title, defaultOptions);
   } catch (err) {
-    console.warn('[FastFlow Notifications] Falha ao despachar notificação nativa:', err);
+    console.warn('[FastFlow Notifications] Falha ao despachar notificação web:', err);
+  }
+}
+
+/**
+ * Agenda notificações nativas para o ciclo de jejum no Android (30 min antes e na meta exata).
+ * Toca mesmo se o app estiver fechado ou tela bloqueada.
+ */
+export async function scheduleFastingNativeNotifications(fast) {
+  const native = getNativeNotifications();
+  if (!native || !fast || !fast.targetEndTime) return;
+
+  const { settings } = getState();
+  if (!settings.notifications?.enabled) return;
+
+  try {
+    await ensureNotificationChannel();
+    await cancelFastingNativeNotifications();
+
+    const notifications = [];
+    const now = Date.now();
+    const thirtyMinMs = 30 * 60 * 1000;
+
+    // 1. Notificação de 30 minutos antes
+    if (settings.notifications.before30m && (fast.targetEndTime - thirtyMinMs > now)) {
+      notifications.push({
+        id: NOTIF_ID_30M,
+        title: 'Faltam 30 minutos! ⏳',
+        body: `Você está quase lá! Seu jejum de ${fast.fastHours}h termina em 30 minutos.`,
+        channelId: 'fastflow_alerts',
+        schedule: {
+          at: new Date(fast.targetEndTime - thirtyMinMs),
+          allowWhileIdle: true
+        }
+      });
+    }
+
+    // 2. Notificação ao atingir a meta
+    if (settings.notifications.onTarget && (fast.targetEndTime > now)) {
+      notifications.push({
+        id: NOTIF_ID_TARGET,
+        title: 'Meta de Jejum Atingida! 🎉',
+        body: `Parabéns! Você completou sua meta de ${fast.fastHours} horas com sucesso.`,
+        channelId: 'fastflow_alerts',
+        schedule: {
+          at: new Date(fast.targetEndTime),
+          allowWhileIdle: true
+        }
+      });
+    }
+
+    if (notifications.length > 0) {
+      await native.schedule({ notifications });
+      console.log('[FastFlow Native Notifications] Notificações do timer agendadas no Android.');
+    }
+  } catch (err) {
+    console.warn('[FastFlow Native Notifications] Erro ao agendar notificações do timer:', err);
+  }
+}
+
+/**
+ * Cancela as notificações agendadas do timer ativo (ao encerrar ou cancelar jejum).
+ */
+export async function cancelFastingNativeNotifications() {
+  const native = getNativeNotifications();
+  if (!native) return;
+  try {
+    await native.cancel({
+      notifications: [{ id: NOTIF_ID_30M }, { id: NOTIF_ID_TARGET }]
+    });
+  } catch (err) {
+    console.warn('[FastFlow Native Notifications] Erro ao cancelar notificações do timer:', err);
   }
 }
 
@@ -128,13 +280,47 @@ export function notifyHydrationAlert() {
 /**
  * Agenda o lembrete diário para iniciar o jejum.
  */
-export function scheduleDailyReminder() {
+export async function scheduleDailyReminder() {
   if (dailyReminderTimer) {
     clearTimeout(dailyReminderTimer);
     dailyReminderTimer = null;
   }
 
   const { settings } = getState();
+  const native = getNativeNotifications();
+
+  // Se estiver rodando nativamente no Android APK
+  if (native) {
+    try {
+      await native.cancel({ notifications: [{ id: NOTIF_ID_DAILY }] });
+      if (settings.notifications?.enabled && settings.notifications?.dailyReminder) {
+        const reminderTime = settings.notifications.dailyReminderTime || '20:00';
+        const [hour, minute] = reminderTime.split(':').map(Number);
+        await ensureNotificationChannel();
+        await native.schedule({
+          notifications: [
+            {
+              id: NOTIF_ID_DAILY,
+              title: 'Hora de Iniciar seu Jejum 🌙',
+              body: 'Seu horário habitual de jejum começou. Abra o FastFlow para dar o play!',
+              channelId: 'fastflow_alerts',
+              schedule: {
+                on: { hour, minute },
+                repeats: true,
+                every: 'day',
+                allowWhileIdle: true
+              }
+            }
+          ]
+        });
+      }
+    } catch (e) {
+      console.warn('[FastFlow Native Notifications] Erro ao agendar lembrete diário nativo:', e);
+    }
+    return;
+  }
+
+  // Fallback web (setTimeout para navegador)
   if (!settings.notifications?.enabled || !settings.notifications?.dailyReminder) {
     return;
   }
@@ -167,7 +353,7 @@ export function scheduleDailyReminder() {
 /**
  * Agenda lembrete semanal de aplicação GLP-1.
  */
-export function scheduleGLP1Reminder() {
+export async function scheduleGLP1Reminder() {
   if (glp1ReminderTimer) {
     clearTimeout(glp1ReminderTimer);
     glp1ReminderTimer = null;
@@ -186,7 +372,6 @@ export function scheduleGLP1Reminder() {
   const nextCheck = new Date(now);
   nextCheck.setHours(h, m, 0, 0);
 
-  // Se o horário de hoje já passou, agenda para amanhã
   if (nextCheck.getTime() <= now.getTime()) {
     nextCheck.setDate(nextCheck.getDate() + 1);
   }

@@ -414,7 +414,7 @@ function bindEventListeners() {
       const granted = await requestNotificationPermission();
       if (!granted) {
         e.target.checked = false;
-        showToast('Permissão de notificações negada no navegador.', 'warning');
+        showToast('Permissão de notificações não concedida. Habilite nas configurações do seu celular.', 'warning');
         return;
       }
       updateSettings({

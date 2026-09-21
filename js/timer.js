@@ -7,7 +7,12 @@
 import { getState, setActiveFast, getCurrentProtocol } from './state.js';
 import { generateUUID, formatHMS, formatDuration, getFastingStage } from './utils.js';
 import { addFastToHistory } from './history.js';
-import { notifyTargetReached, notifyBeforeTarget } from './notifications.js';
+import {
+  notifyTargetReached,
+  notifyBeforeTarget,
+  scheduleFastingNativeNotifications,
+  cancelFastingNativeNotifications
+} from './notifications.js';
 
 let timerInterval = null;
 const timerListeners = new Set();
@@ -164,6 +169,7 @@ export function startFast(customProtocol = null) {
 
   setActiveFast(newFast);
   startTimerTick();
+  scheduleFastingNativeNotifications(newFast);
   return newFast;
 }
 
@@ -175,6 +181,8 @@ export function startFast(customProtocol = null) {
 export function endFast(notes = '') {
   const { activeFast } = getState();
   if (!activeFast) return null;
+
+  cancelFastingNativeNotifications();
 
   const endedAt = Date.now();
   const durationMs = Math.max(0, endedAt - activeFast.startedAt);
@@ -207,6 +215,7 @@ export function endFast(notes = '') {
  * Cancela o jejum atual sem adicionar ao histórico.
  */
 export function cancelFast() {
+  cancelFastingNativeNotifications();
   setActiveFast(null);
   tick();
 }
@@ -221,6 +230,11 @@ export function initTimer() {
       tick();
     }
   });
+
+  const { activeFast } = getState();
+  if (activeFast) {
+    scheduleFastingNativeNotifications(activeFast);
+  }
 
   // Inicia o tick se houver um jejum ativo ao carregar
   startTimerTick();
