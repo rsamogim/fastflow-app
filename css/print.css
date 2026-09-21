@@ -1,0 +1,94 @@
+/**
+ * FastFlow v3.0 — Folha de Estilos para Impressão e PDF do Relatório Médico
+ * Ativada automaticamente em window.print() para gerar laudos clínicos limpos em A4.
+ */
+
+@media print {
+  /* Oculta toda a interface do aplicativo móvel */
+  body, html {
+    background: #ffffff !important;
+    color: #111827 !important;
+    font-size: 11pt !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .app-header,
+  .bottom-nav,
+  .bottom-sheet-backdrop,
+  .toast-container,
+  .screen-view,
+  .modal-actions,
+  button,
+  .btn,
+  .btn-icon-close,
+  .bottom-sheet-handle {
+    display: none !important;
+  }
+
+  /* Exibe exclusivamente o container do relatório médico */
+  #printable-clinical-report,
+  .medical-report-container {
+    display: block !important;
+    position: static !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 15mm 15mm !important;
+    box-sizing: border-box !important;
+    background: #ffffff !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+    border: none !important;
+  }
+
+  /* Quebras de página controladas */
+  .report-section,
+  .report-summary-grid,
+  .report-footer {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Cores e bordas otimizadas para impressora e PDF */
+  .report-table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+  }
+
+  .report-table th {
+    background-color: #f3f4f6 !important;
+    color: #111827 !important;
+    border-bottom: 2px solid #9ca3af !important;
+    padding: 6px 8px !important;
+    font-size: 9.5pt !important;
+  }
+
+  .report-table td {
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 6px 8px !important;
+    font-size: 9pt !important;
+    color: #1f2937 !important;
+  }
+
+  .report-metric-card {
+    border: 1px solid #d1d5db !important;
+    background-color: #f9fafb !important;
+    padding: 8px 12px !important;
+    border-radius: 6px !important;
+  }
+
+  .report-header {
+    border-bottom: 2px solid #2563eb !important;
+    padding-bottom: 10px !important;
+    margin-bottom: 16px !important;
+  }
+
+  .report-logo {
+    color: #2563eb !important;
+    font-weight: 800 !important;
+    font-size: 16pt !important;
+  }
+}

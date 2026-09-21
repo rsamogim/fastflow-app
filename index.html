@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>FastFlow v3.0 — Jejum Intermitente & GLP-1 Companion (PRO)</title>
+  <meta name="description" content="Controle moderno de jejum intermitente e companion de canetas emagrecedoras (GLP-1: Ozempic, Wegovy, Mounjaro) com timer, laudos médicos, hidratação e funcionamento offline.">
+
+  <!-- Meta tags PWA e Mobile -->
+  <meta name="theme-color" content="#0F1115" id="meta-theme-color">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="FastFlow">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="format-detection" content="telephone=no">
+
+  <!-- Manifest e Ícones -->
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" type="image/svg+xml" href="./assets/icons/icon.svg">
+  <link rel="apple-touch-icon" href="./assets/icons/icon-192.png">
+
+  <!-- Tipografia Inter do Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <!-- Estilos CSS em Camadas -->
+  <link rel="stylesheet" href="./css/reset.css">
+  <link rel="stylesheet" href="./css/variables.css">
+  <link rel="stylesheet" href="./css/base.css">
+  <link rel="stylesheet" href="./css/components.css">
+  <link rel="stylesheet" href="./css/screens.css">
+  <link rel="stylesheet" href="./css/print.css" media="print">
+</head>
+<body>
+  <div id="app" class="app-container">
+    
+    <!-- Top Bar / Cabeçalho Global Fixo -->
+    <header class="app-header">
+      <div class="header-brand">
+        <div class="logo-mark">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+            <circle cx="12" cy="12" r="4" fill="currentColor" fill-opacity="0.2"/>
+          </svg>
+        </div>
+        <span class="brand-title">FastFlow</span>
+      </div>
+
+      <div class="header-actions">
+        <div class="streak-pill" id="header-streak-pill" title="Sequência de dias cumpridos">
+          <span class="streak-icon">🔥</span>
+          <span class="streak-count" id="header-streak-count">0</span>
+        </div>
+
+        <button type="button" class="btn-icon" id="quick-theme-toggle" aria-label="Alternar tema">
+          <!-- Ícone Sol (Light) -->
+          <svg class="theme-icon-sun" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+          <!-- Ícone Lua (Dark) -->
+          <svg class="theme-icon-moon" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Área de Conteúdo das Telas -->
+    <main class="app-main">
+      
+      <!-- TELA 1: HOJE -->
+      <section id="screen-today" class="screen-view active">
+        <!-- Saudação e Protocolo Ativo -->
+        <header class="today-greeting-block">
+          <p class="greeting-subtitle" id="today-greeting">Bom dia</p>
+          <div class="protocol-badge-row">
+            <span class="protocol-chip" id="today-protocol-chip">Protocolo 16:8</span>
+            <span class="target-chip" id="today-target-chip">Meta: 16h</span>
+          </div>
+        </header>
+
+        <!-- Card Principal com o Anel Circular de Progresso -->
+        <div class="timer-card" id="timer-main-card">
+          <div class="ring-container">
+            <svg class="progress-ring" viewBox="0 0 320 320">
+              <defs>
+                <linearGradient id="fastingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00E0A4"/>
+                  <stop offset="100%" stop-color="#05B984"/>
+                </linearGradient>
+                <linearGradient id="eatingGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFB547"/>
+                  <stop offset="100%" stop-color="#FF8C00"/>
+                </linearGradient>
+                <linearGradient id="targetReachedGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#00FFA8"/>
+                  <stop offset="50%" stop-color="#FFD700"/>
+                  <stop offset="100%" stop-color="#00E0A4"/>
+                </linearGradient>
+              </defs>
+
+              <circle class="progress-ring-track" cx="160" cy="160" r="134" stroke-width="16"/>
+
+              <circle
+                id="timer-progress-ring"
+                class="progress-ring-bar"
+                cx="160"
+                cy="160"
+                r="134"
+                stroke-width="16"
+                stroke-linecap="round"
+                stroke-dasharray="841.95"
+                stroke-dashoffset="841.95"
+                transform="rotate(-90 160 160)"
+              />
+            </svg>
+
+            <!-- Conteúdo Central do Timer -->
+            <div class="timer-center-content">
+              <!-- Estado Parado -->
+              <div id="timer-idle-display" class="timer-idle-group">
+                <div class="idle-icon-wrap">
+                  <svg viewBox="0 0 24 24" width="36" height="36" fill="currentColor">
+                    <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                  </svg>
+                </div>
+                <h2 class="idle-title">Pronto para começar?</h2>
+                <p class="idle-hint">Toque abaixo para iniciar seu jejum</p>
+              </div>
+
+              <!-- Estado Ativo -->
+              <div id="timer-active-display" class="timer-active-group hidden">
+                <span class="timer-state-label" id="timer-status-badge">EM JEJUM</span>
+                <div class="timer-digits" id="timer-digits">00:00:00</div>
+                <div class="timer-subtext" id="timer-subtext">Tempo restante: 16h 00min</div>
+                <div class="timer-progress-percent" id="timer-progress-percent">0%</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Barra de Progresso Linear Auxiliar -->
+          <div class="mini-progress-wrapper" id="mini-progress-wrapper">
+            <div class="mini-progress-track">
+              <div class="mini-progress-fill" id="mini-progress-bar"></div>
+            </div>
+            <div class="mini-progress-labels">
+              <span id="mini-time-start">Início: --:--</span>
+              <span id="mini-time-target">Término: --:--</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação Primária e Secundária -->
+        <div class="action-buttons-group">
+          <button type="button" class="btn btn-primary btn-pill btn-large" id="btn-start-fast">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor">
+              <polygon points="5 3 19 12 5 21 5 3"></polygon>
+            </svg>
+            <span>Iniciar Jejum</span>
+          </button>
+
+          <div class="active-fast-buttons hidden" id="active-fast-buttons">
+            <button type="button" class="btn btn-accent btn-pill btn-large" id="btn-end-fast">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+                <rect x="6" y="6" width="12" height="12" rx="2"></rect>
+              </svg>
+              <span>Encerrar Jejum</span>
+            </button>
+            <button type="button" class="btn btn-subtle btn-pill" id="btn-cancel-fast">
+              Cancelar jejum
+            </button>
+          </div>
+        </div>
+
+        <!-- NOVO v2.0: Card GLP-1 Companion (Exibido dinamicamente se ativado) -->
+        <div class="card glp1-companion-card hidden" id="glp1-companion-card">
+          <div class="glp1-card-header">
+            <div>
+              <span class="badge-glp1" id="glp1-med-badge">💉 Ozempic (0,5mg)</span>
+              <h3 class="glp1-card-title" id="glp1-next-inj-title">Próxima Aplicação</h3>
+            </div>
+            <span class="tag-pill" id="glp1-countdown-pill">Em 2 dias</span>
+          </div>
+          <div class="glp1-countdown-box">
+            <span class="glp1-site-suggestion" id="glp1-suggested-site">🎯 Local sugerido: <strong>Abdômen Direito</strong></span>
+          </div>
+          <div class="glp1-card-actions">
+            <button type="button" class="btn btn-glp1 btn-sm btn-full" id="btn-log-injection-modal">
+              Registrar Aplicação da Dose
+            </button>
+          </div>
+        </div>
+
+        <!-- NOVO v2.0: Widget Interativo de Hidratação -->
+        <div class="card water-tracker-card hidden" id="water-tracker-card">
+          <div class="water-card-header">
+            <div class="water-title-row">
+              <span>💧</span>
+              <span>Hidratação Diária</span>
+            </div>
+            <span class="water-stats-text" id="water-stats-text">0 / 2500 ml (0 copos)</span>
+          </div>
+          <div class="water-progress-track">
+            <div class="water-progress-fill" id="water-progress-fill"></div>
+          </div>
+          <div class="water-controls-row">
+            <button type="button" class="btn water-btn-sub" id="btn-water-sub" aria-label="Remover copo">-</button>
+            <button type="button" class="btn btn-secondary water-btn-add" id="btn-water-add">
+              + 1 Copo de Água (250ml)
+            </button>
+          </div>
+        </div>
+
+        <!-- NOVO v3.0: Widget de Ingestão Proteica Diária (Anti-Sarcopenia & Anti-Flacidez) -->
+        <div class="card protein-tracker-card hidden" id="protein-tracker-card">
+          <div class="water-card-header">
+            <div class="water-title-row">
+              <span>🍗</span>
+              <span>Proteína Diária (Massa Magra)</span>
+            </div>
+            <span class="water-stats-text" id="protein-stats-text">0 / 90g (0%)</span>
+          </div>
+          <div class="protein-progress-track">
+            <div class="protein-progress-fill" id="protein-progress-fill" style="width: 0%;"></div>
+          </div>
+          <div class="protein-quick-grid">
+            <button type="button" class="protein-quick-btn" id="btn-add-protein-15">+15g (Ovos)</button>
+            <button type="button" class="protein-quick-btn" id="btn-add-protein-30">+30g (Frango/Whey)</button>
+            <button type="button" class="protein-quick-btn" id="btn-guide-fast-break">🍽️ Guia Quebra</button>
+          </div>
+        </div>
+
+        <!-- NOVO v3.0: Gerenciador de Estoque de Canetas & Validade (PRO) -->
+        <div class="card pen-inventory-card hidden" id="pen-inventory-card">
+          <div class="card-header-compact">
+            <div class="card-icon-tag" style="background:rgba(0,198,255,0.15); color:var(--accent-glp1);">📦</div>
+            <div style="flex:1;">
+              <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 class="card-title-sm" id="pen-inv-title">Estoque da Caneta</h3>
+                <span class="badge-pro">PRO</span>
+              </div>
+              <p class="card-meta-text" id="pen-inv-desc">4 de 4 doses restantes</p>
+            </div>
+          </div>
+          <div class="dose-dots-row" id="pen-dose-dots">
+            <div class="dose-dot used"></div>
+            <div class="dose-dot"></div>
+            <div class="dose-dot"></div>
+            <div class="dose-dot"></div>
+          </div>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:6px;">
+            <span class="tag-pill" id="pen-expiry-pill" style="font-size:0.65rem;">Validade: 56 dias restantes</span>
+            <button type="button" class="btn btn-secondary btn-sm" id="btn-manage-pen-modal" style="font-size:0.6875rem; padding:3px 8px;">
+              Configurar Caneta
+            </button>
+          </div>
+          <div class="reorder-banner hidden" id="pen-reorder-banner">
+            ⚠️ <strong>Atenção:</strong> Apenas 1 dose restante. Providencie sua próxima caneta na farmácia!
+          </div>
+        </div>
+
+        <!-- Card Secundário: Janela de Alimentação / Último Jejum -->
+        <div class="card secondary-card" id="secondary-status-card">
+          <div class="card-header-compact">
+            <div class="card-icon-tag" id="secondary-card-icon">⏳</div>
+            <div>
+              <h3 class="card-title-sm" id="secondary-card-title">Último Jejum</h3>
+              <p class="card-meta-text" id="secondary-card-desc">Nenhum jejum recente registrado</p>
+            </div>
+          </div>
+          <div class="secondary-card-footer" id="secondary-card-stats">
+            <span class="tag-pill" id="secondary-time-elapsed">Pronto para novo ciclo</span>
+          </div>
+        </div>
+
+        <!-- Card Dica Rápida / Estágios do Jejum -->
+        <div class="card fasting-stage-card" id="fasting-stage-card">
+          <div class="stage-badge" id="current-stage-name">Glicemia Normal</div>
+          <p class="stage-description" id="current-stage-desc">
+            Seu corpo está digerindo a última refeição e usando a glicose circulante para energia.
+          </p>
+        </div>
+      </section>
+
+      <!-- TELA 2: HISTÓRICO -->
+      <section id="screen-history" class="screen-view">
+        <header class="screen-header">
+          <h1 class="screen-title">Histórico</h1>
+          <p class="screen-subtitle">Acompanhe todos os seus ciclos e aplicações</p>
+          <div style="margin-top: 10px;">
+            <button type="button" class="btn btn-secondary btn-sm btn-full" id="btn-export-medical-report" style="display:flex; justify-content:center; align-items:center; gap:8px;">
+              <span>📄 Gerar Relatório Clínico em PDF</span>
+              <span class="badge-pro">PRO</span>
+            </button>
+          </div>
+        </header>
+
+        <!-- Seletor de Tipo de Histórico (Jejuns vs Aplicações GLP-1) -->
+        <div class="filter-chips-row" id="history-view-type-row">
+          <button type="button" class="filter-chip active" id="chip-view-fasts" data-view-type="fasts">Jejuns</button>
+          <button type="button" class="filter-chip hidden" id="chip-view-glp1" data-view-type="glp1">💉 Aplicações GLP-1</button>
+        </div>
+
+        <!-- Filtros Rápidos de Período para Jejuns -->
+        <div class="filter-chips-row" id="history-period-filter-row">
+          <button type="button" class="filter-chip active" data-filter="all">Todos</button>
+          <button type="button" class="filter-chip" data-filter="week">Esta semana</button>
+          <button type="button" class="filter-chip" data-filter="month">Este mês</button>
+        </div>
+
+        <!-- Lista Dinâmica -->
+        <div class="history-list" id="history-list-container"></div>
+
+        <!-- Estado Vazio -->
+        <div class="empty-state hidden" id="history-empty-state">
+          <div class="empty-icon-wrap">
+            <svg viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <h2 class="empty-title" id="empty-title-text">Nenhum registro no período</h2>
+          <p class="empty-desc" id="empty-desc-text">Inicie seu primeiro ciclo para começar a construir seu histórico.</p>
+        </div>
+      </section>
+
+      <!-- TELA 3: PROGRESSO -->
+      <section id="screen-stats" class="screen-view">
+        <header class="screen-header">
+          <h1 class="screen-title">Progresso</h1>
+          <p class="screen-subtitle">Estatísticas, consistência e evolução corporal</p>
+        </header>
+
+        <!-- Grade de Indicadores Chave -->
+        <div class="stats-metric-grid">
+          <div class="metric-card">
+            <div class="metric-icon">🔥</div>
+            <div class="metric-info">
+              <span class="metric-value" id="stat-streak-val">0 dias</span>
+              <span class="metric-label">Streak atual</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">🏆</div>
+            <div class="metric-info">
+              <span class="metric-value" id="stat-longest-val">0h 00m</span>
+              <span class="metric-label">Maior jejum</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">📊</div>
+            <div class="metric-info">
+              <span class="metric-value" id="stat-avg-val">0h 00m</span>
+              <span class="metric-label">Média 30 dias</span>
+            </div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-icon">✅</div>
+            <div class="metric-info">
+              <span class="metric-value" id="stat-rate-val">0%</span>
+              <span class="metric-label">Taxa de sucesso</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Total de Horas no Mês -->
+        <div class="card total-hours-banner">
+          <div class="total-hours-content">
+            <span class="total-label">⏱️ Total acumulado este mês</span>
+            <span class="total-number" id="stat-month-total">0h jejuadas</span>
+          </div>
+          <div class="total-badge" id="stat-total-fasts">0 jejuns</div>
+        </div>
+
+        <!-- NOVO v2.0: Banner de Peso Corporal & Meta GLP-1 -->
+        <div class="card weight-card-banner hidden" id="weight-tracker-banner">
+          <div>
+            <span class="total-label">⚖️ Peso Corporal Atual</span>
+            <div class="weight-banner-val" id="stat-current-weight">75.0 kg</div>
+            <span class="card-meta-text" id="stat-protein-target">Meta proteica diária: 90g - 120g</span>
+          </div>
+          <button type="button" class="btn btn-secondary btn-sm" id="btn-log-weight-modal">
+            + Registrar Peso
+          </button>
+        </div>
+
+        <!-- Card de Sugestão de Progressão Automática -->
+        <div class="card suggestion-card hidden" id="progression-suggestion-card">
+          <div class="suggestion-header">
+            <span class="suggestion-badge">🚀 EVOLUÇÃO SUGERIDA</span>
+            <h3 class="suggestion-title" id="suggestion-title">Pronto para o próximo nível?</h3>
+          </div>
+          <p class="suggestion-desc" id="suggestion-desc">
+            Você atingiu a meta 5 vezes consecutivas! Que tal subir de <strong>16:8</strong> para <strong>17:7</strong>?
+          </p>
+          <div class="suggestion-actions">
+            <button type="button" class="btn btn-primary btn-sm" id="btn-accept-suggestion">Aceitar sugestão</button>
+            <button type="button" class="btn btn-subtle btn-sm" id="btn-dismiss-suggestion">Manter atual</button>
+          </div>
+        </div>
+
+        <!-- NOVO v2.0: Gráfico GLP-1 de Evolução de Peso x Doses -->
+        <div class="chart-card hidden" id="glp1-weight-chart-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-title">Peso x Titulação de Doses</h3>
+              <p class="chart-subtitle">Curva de peso com histórico de aplicações</p>
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-weight-chart" width="600" height="260"></canvas>
+          </div>
+        </div>
+
+        <!-- NOVO v2.0: Gráfico de Hidratação Semanal -->
+        <div class="chart-card hidden" id="glp1-water-chart-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-title">Consistência de Hidratação</h3>
+              <p class="chart-subtitle">Últimos 7 dias em relação à meta de água</p>
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-water-chart" width="600" height="220"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico 1: Duração dos Últimos Dias (Barras com Meta) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-title">Duração dos Jejuns</h3>
+              <p class="chart-subtitle">Comparativo diário com a linha da meta</p>
+            </div>
+            <div class="chart-period-selector">
+              <button type="button" class="period-chip active" data-chart-period="7">7d</button>
+              <button type="button" class="period-chip" data-chart-period="14">14d</button>
+              <button type="button" class="period-chip" data-chart-period="30">30d</button>
+            </div>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-bar-chart" width="600" height="280"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico 2: Evolução da Duração (Linha de Tendência) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Evolução & Tendência</h3>
+            <p class="chart-subtitle">Histórico contínuo de tempo jejuado</p>
+          </div>
+          <div class="canvas-wrapper">
+            <canvas id="canvas-line-chart" width="600" height="260"></canvas>
+          </div>
+        </div>
+
+        <!-- Gráfico 3: Heatmap de Consistência (Estilo GitHub - 3 Meses) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Mapa de Regularidade</h3>
+            <p class="chart-subtitle">Consistência dos últimos 90 dias</p>
+          </div>
+          <div class="canvas-wrapper heatmap-wrapper">
+            <canvas id="canvas-heatmap" width="640" height="150"></canvas>
+          </div>
+          <div class="heatmap-legend">
+            <span>Menos</span>
+            <span class="legend-box level-0"></span>
+            <span class="legend-box level-1"></span>
+            <span class="legend-box level-2"></span>
+            <span class="legend-box level-3"></span>
+            <span>Mais</span>
+          </div>
+        </div>
+
+        <!-- Gráfico 4: Distribuição dos Protocolos (Rosca / Donut) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Protocolos Utilizados</h3>
+            <p class="chart-subtitle">Divisão percentual dos seus métodos</p>
+          </div>
+          <div class="canvas-wrapper donut-wrapper">
+            <canvas id="canvas-donut" width="500" height="260"></canvas>
+          </div>
+          <div class="donut-legend" id="donut-legend-container"></div>
+        </div>
+
+        <!-- NOVO v3.0: Vitrine de Suplementação & Apoio GLP-1 (Afiliados & Recomendações) -->
+        <div class="settings-group" style="margin-top: 24px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h2 class="settings-group-title" style="margin:0;">Suplementos & Apoio Clínico</h2>
+            <span class="tag-pill" style="font-size:0.65rem;">Recomendado</span>
+          </div>
+          <p class="card-meta-text" style="margin-bottom:12px;">
+            Itens cientificamente respaldados para quem usa canetas emagrecedoras e jejua: proteção muscular, hidratação e intestino regulado.
+          </p>
+          <div class="supplements-grid" id="supplements-list-container"></div>
+        </div>
+      </section>
+
+      <!-- TELA 4: AJUSTES -->
+      <section id="screen-settings" class="screen-view">
+        <header class="screen-header">
+          <h1 class="screen-title">Ajustes</h1>
+          <p class="screen-subtitle">Personalize seu protocolo, canetas GLP-1 e dados</p>
+        </header>
+
+        <!-- NOVO v3.0: SEÇÃO PLANOS & ASSINATURA FASTFLOW PRO -->
+        <div class="settings-group">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+            <h2 class="settings-group-title" style="margin:0;">Plano & Assinatura</h2>
+            <span class="badge-pro" id="settings-plan-badge">FREE</span>
+          </div>
+          <div class="card settings-card">
+            <div class="setting-row">
+              <div class="setting-text">
+                <span class="setting-name" id="settings-plan-title">FastFlow Gratuito</span>
+                <span class="setting-desc" id="settings-plan-desc">Desbloqueie laudos clínicos em PDF, estoque de canetas e guia anti-náusea.</span>
+              </div>
+              <button type="button" class="btn btn-pro btn-sm" id="btn-open-paywall-settings">
+                👑 Upgrade PRO
+              </button>
+            </div>
+
+            <!-- Inserção de Chave de Licença -->
+            <div class="license-trigger-row" style="margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+              <label for="input-license-key" style="font-size:0.75rem; color:var(--text-secondary); display:block; margin-bottom:4px;">
+                Já comprou? Digite sua Chave de Licença / Código VIP:
+              </label>
+              <div class="license-input-wrapper">
+                <input type="text" id="input-license-key" class="time-input" placeholder="Ex: FAST-VIP-XXXX-YYYY" style="text-transform:uppercase; font-size:0.8rem; font-family:monospace; flex:1;">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-activate-license">
+                  Ativar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- NOVO v2.0: SEÇÃO CANETAS EMAGRECEDORAS (GLP-1) -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Canetas Emagrecedoras (GLP-1)</h2>
+          <div class="card settings-card">
+            <div class="setting-row">
+              <div class="setting-text">
+                <span class="setting-name">Ativar Módulo GLP-1 Companion</span>
+                <span class="setting-desc">Rastreamento de doses, rotação de locais e hidratação</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-glp1-enable">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div id="glp1-settings-panel" class="sub-settings-panel hidden">
+              <!-- Seletor de Medicação -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Sua Medicação</span>
+                  <span class="setting-desc">Nome do análogo utilizado</span>
+                </div>
+                <select id="setting-glp1-med" class="time-input">
+                  <option value="ozempic">Ozempic (Semaglutida)</option>
+                  <option value="wegovy">Wegovy (Semaglutida)</option>
+                  <option value="mounjaro">Mounjaro (Tirzepatida)</option>
+                  <option value="zepbound">Zepbound (Tirzepatida)</option>
+                  <option value="saxenda">Saxenda (Liraglutida)</option>
+                  <option value="rybelsus">Rybelsus (Semaglutida Oral)</option>
+                  <option value="custom">Outro / Personalizado</option>
+                </select>
+              </div>
+
+              <!-- Dose Atual -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Dose Atual</span>
+                  <span class="setting-desc">Concentração da dose em curso</span>
+                </div>
+                <select id="setting-glp1-dose" class="time-input">
+                  <option value="0,25mg">0,25mg</option>
+                  <option value="0,5mg" selected>0,5mg</option>
+                  <option value="1,0mg">1,0mg</option>
+                  <option value="2,0mg">2,0mg</option>
+                </select>
+              </div>
+
+              <!-- Dia da Aplicação -->
+              <div class="setting-row" id="glp1-injection-day-row">
+                <div class="setting-text">
+                  <span class="setting-name">Dia Habitual da Aplicação</span>
+                  <span class="setting-desc">Dia da semana da injeção semanal</span>
+                </div>
+                <select id="setting-glp1-day" class="time-input">
+                  <option value="domingo">Domingo</option>
+                  <option value="segunda">Segunda-feira</option>
+                  <option value="terca">Terça-feira</option>
+                  <option value="quarta">Quarta-feira</option>
+                  <option value="quinta" selected>Quinta-feira</option>
+                  <option value="sexta">Sexta-feira</option>
+                  <option value="sabado">Sábado</option>
+                </select>
+              </div>
+
+              <!-- Meta de Água -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Meta Diária de Água (ml)</span>
+                  <span class="setting-desc">Essencial para evitar desidratação e constipação</span>
+                </div>
+                <input type="number" id="setting-glp1-water-target" class="number-input" min="1000" max="6000" step="250" value="2500">
+              </div>
+
+              <!-- Peso Corporal Inicial -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Peso Atual (kg)</span>
+                  <span class="setting-desc">Usado para calcular meta de proteína protetora</span>
+                </div>
+                <input type="number" id="setting-glp1-weight" class="number-input" min="30" max="300" step="0.5" value="75">
+              </div>
+
+              <!-- Notificação da Injeção -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Lembrete no dia da aplicação</span>
+                  <span class="setting-desc">Avisa no dia e horário da dose</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-glp1-notify-inj" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <!-- Notificação de Proteína -->
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Avisos anti-sarcopenia na quebra</span>
+                  <span class="setting-desc">Lembra de priorizar proteínas ao encerrar jejum</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-glp1-notify-protein" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO PROTOCOLOS DE JEJUM -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Protocolo de Jejum</h2>
+          <div class="card settings-card">
+            <label class="field-label">Escolha seu protocolo padrão</label>
+            <div class="protocol-chip-grid" id="settings-protocol-chips">
+              <button type="button" class="chip-select" data-protocol="14:10">14:10</button>
+              <button type="button" class="chip-select active" data-protocol="16:8">16:8</button>
+              <button type="button" class="chip-select" data-protocol="17:7">17:7</button>
+              <button type="button" class="chip-select" data-protocol="18:6">18:6</button>
+              <button type="button" class="chip-select" data-protocol="20:4">20:4</button>
+              <button type="button" class="chip-select" data-protocol="22:2">22:2</button>
+              <button type="button" class="chip-select" data-protocol="23:1">OMAD (23:1)</button>
+              <button type="button" class="chip-select" data-protocol="custom">Personalizado</button>
+            </div>
+
+            <!-- Campos se protocolo Custom for selecionado -->
+            <div class="custom-protocol-inputs hidden" id="custom-protocol-box">
+              <div class="input-row">
+                <div class="input-field">
+                  <label for="custom-fast-hours">Horas de Jejum</label>
+                  <input type="number" id="custom-fast-hours" min="1" max="72" value="16">
+                </div>
+                <div class="input-field">
+                  <label for="custom-eating-hours">Horas de Janela</label>
+                  <input type="number" id="custom-eating-hours" min="1" max="23" value="8">
+                </div>
+              </div>
+            </div>
+
+            <!-- Horário Alvo de Início -->
+            <div class="setting-row">
+              <div class="setting-text">
+                <span class="setting-name">Horário-alvo de início</span>
+                <span class="setting-desc">Horário habitual que você planeja começar</span>
+              </div>
+              <input type="time" id="setting-target-start-time" class="time-input" value="20:00">
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO PROGRESSÃO AUTOMÁTICA -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Progressão Inteligente</h2>
+          <div class="card settings-card">
+            <div class="setting-row">
+              <div class="setting-text">
+                <span class="setting-name">Sugerir aumento de protocolo</span>
+                <span class="setting-desc">Sugere subir o nível após sequência de metas cumpridas</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-auto-progress" checked>
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div class="setting-row" id="auto-progress-threshold-row">
+              <div class="setting-text">
+                <span class="setting-name">Metas consecutivas para sugerir</span>
+                <span class="setting-desc">Quantidade de sucessos antes do aviso</span>
+              </div>
+              <input type="number" id="setting-progress-threshold" class="number-input" min="3" max="20" value="5">
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO NOTIFICAÇÕES -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Notificações</h2>
+          <div class="card settings-card">
+            <div class="setting-row">
+              <div class="setting-text">
+                <span class="setting-name">Ativar notificações</span>
+                <span class="setting-desc">Avisos de progresso e lembretes</span>
+              </div>
+              <label class="toggle-switch">
+                <input type="checkbox" id="toggle-notifications">
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+
+            <div id="sub-notifications-container" class="sub-settings-panel">
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Avisar 30 min antes da meta</span>
+                  <span class="setting-desc">Prepara você para o encerramento</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-notify-before" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Avisar ao atingir a meta</span>
+                  <span class="setting-desc">Celebra a conquista do ciclo</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-notify-target" checked>
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-row">
+                <div class="setting-text">
+                  <span class="setting-name">Lembrete diário para iniciar</span>
+                  <span class="setting-desc">Aviso no horário habitual</span>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="toggle-notify-daily">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+
+              <div class="setting-row" id="daily-reminder-time-row">
+                <div class="setting-text">
+                  <span class="setting-name">Horário do lembrete</span>
+                  <span class="setting-desc">Quando disparar o aviso diário</span>
+                </div>
+                <input type="time" id="setting-daily-reminder-time" class="time-input" value="20:00">
+              </div>
+
+              <div class="setting-row setting-actions-row">
+                <button type="button" class="btn btn-secondary btn-sm" id="btn-test-notification">
+                  🔔 Testar notificação agora
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO APARÊNCIA -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Aparência</h2>
+          <div class="card settings-card">
+            <div class="theme-options-grid" id="theme-selector-group">
+              <button type="button" class="theme-option-card active" data-theme-value="dark">
+                <span class="theme-icon">🌙</span>
+                <span class="theme-label">Escuro</span>
+              </button>
+              <button type="button" class="theme-option-card" data-theme-value="light">
+                <span class="theme-icon">☀️</span>
+                <span class="theme-label">Claro</span>
+              </button>
+              <button type="button" class="theme-option-card" data-theme-value="system">
+                <span class="theme-icon">⚙️</span>
+                <span class="theme-label">Sistema</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO DADOS & BACKUP -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Dados & Armazenamento</h2>
+          <div class="card settings-card">
+            <p class="card-meta-text">Seus dados ficam 100% seguros no armazenamento local do seu próprio aparelho.</p>
+            
+            <div class="button-stack">
+              <button type="button" class="btn btn-secondary btn-full" id="btn-export-data">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="7 10 12 15 17 10"></polyline>
+                  <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                <span>Exportar dados (Backup JSON)</span>
+              </button>
+
+              <button type="button" class="btn btn-secondary btn-full" id="btn-import-data-trigger">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                  <polyline points="17 8 12 3 7 8"></polyline>
+                  <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <span>Importar dados (Upload JSON)</span>
+              </button>
+              <input type="file" id="file-import-input" accept=".json" class="hidden">
+
+              <button type="button" class="btn btn-danger-outline btn-full" id="btn-clear-data">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                <span>Limpar todo o histórico</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO INSTALAÇÃO PWA E SOBRE -->
+        <div class="settings-group">
+          <h2 class="settings-group-title">Aplicativo</h2>
+          <div class="card settings-card">
+            <div class="install-pwa-banner hidden" id="install-pwa-box">
+              <div class="install-pwa-info">
+                <span class="install-title">Instalar FastFlow no Celular</span>
+                <span class="install-desc">Adicione à tela inicial para tela cheia e offline</span>
+              </div>
+              <button type="button" class="btn btn-primary btn-sm" id="btn-install-pwa">Instalar</button>
+            </div>
+
+            <div class="about-info-row">
+              <span class="about-label">Versão</span>
+              <span class="about-val">2.0.0 (GLP-1 Edition)</span>
+            </div>
+            <div class="about-info-row">
+              <span class="about-label">Tecnologia</span>
+              <span class="about-val">HTML5 + CSS3 + Vanilla JS Puro</span>
+            </div>
+            <div class="about-info-row">
+              <span class="about-label">Privacidade</span>
+              <span class="about-val">Zero rastreamento • 100% Local</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Barra de Navegação Inferior Fixa (4 Abas) -->
+    <nav class="bottom-nav">
+      <button type="button" class="nav-item active" data-tab="screen-today" aria-label="Aba Hoje">
+        <svg class="nav-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+          <polyline points="9 22 9 12 15 12 15 22"></polyline>
+        </svg>
+        <span class="nav-label">Hoje</span>
+      </button>
+
+      <button type="button" class="nav-item" data-tab="screen-history" aria-label="Aba Histórico">
+        <svg class="nav-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polyline points="12 6 12 12 16 14"></polyline>
+        </svg>
+        <span class="nav-label">Histórico</span>
+      </button>
+
+      <button type="button" class="nav-item" data-tab="screen-stats" aria-label="Aba Progresso">
+        <svg class="nav-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="20" x2="18" y2="10"></line>
+          <line x1="12" y1="20" x2="12" y2="4"></line>
+          <line x1="6" y1="20" x2="6" y2="14"></line>
+        </svg>
+        <span class="nav-label">Progresso</span>
+      </button>
+
+      <button type="button" class="nav-item" data-tab="screen-settings" aria-label="Aba Ajustes">
+        <svg class="nav-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <span class="nav-label">Ajustes</span>
+      </button>
+    </nav>
+
+    <!-- Bottom Sheet Modal para Ações, Aplicações e Detalhes -->
+    <div class="bottom-sheet-backdrop" id="bottom-sheet-backdrop">
+      <div class="bottom-sheet-content" id="bottom-sheet-content" role="dialog" aria-modal="true">
+        <div class="bottom-sheet-handle"></div>
+        <div class="bottom-sheet-header">
+          <h2 class="bottom-sheet-title" id="bottom-sheet-title">Confirmação</h2>
+          <button type="button" class="btn-icon-close" id="bottom-sheet-close" aria-label="Fechar modal">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        <div class="bottom-sheet-body" id="bottom-sheet-body"></div>
+      </div>
+    </div>
+
+    <!-- Container de Toasts -->
+    <div class="toast-container" id="toast-container" aria-live="polite"></div>
+
+  </div>
+
+  <!-- Carregamento Modular de JavaScript -->
+  <script type="module" src="./js/app.js"></script>
+</body>
+</html>

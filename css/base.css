@@ -1,0 +1,201 @@
+/* ==========================================================================
+   FastFlow — Estilos Globais, Layout e Tipografia
+   ========================================================================== */
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-regular);
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  transition: background-color var(--transition-normal), color var(--transition-normal);
+}
+
+/* Container do App (Mobile-first com centralização em Desktop) */
+.app-container {
+  width: 100%;
+  max-width: var(--max-width-mobile);
+  min-height: 100dvh;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background-color: var(--bg-primary);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+}
+
+@media (min-width: 600px) {
+  body {
+    background-color: #050608;
+    padding: 16px 0;
+  }
+  
+  html[data-theme="light"] body {
+    background-color: #E2E8F0;
+  }
+
+  .app-container {
+    min-height: calc(100dvh - 32px);
+    border-radius: var(--radius-2xl);
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+}
+
+/* ==========================================================================
+   Cabeçalho Fixo Global
+   ========================================================================== */
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: calc(var(--header-height) + var(--safe-top));
+  padding-top: var(--safe-top);
+  padding-left: var(--space-lg);
+  padding-right: var(--space-lg);
+  background-color: var(--bg-primary);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.header-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.logo-mark {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: var(--radius-md);
+  background: var(--accent-gradient);
+  color: #0F1115;
+  box-shadow: 0 2px 10px var(--accent-glow);
+}
+
+.brand-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-black);
+  letter-spacing: -0.5px;
+  background: linear-gradient(135deg, var(--text-primary) 30%, var(--text-secondary) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xs);
+}
+
+.streak-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.streak-icon {
+  font-size: 14px;
+}
+
+/* ==========================================================================
+   Área Principal e Telas (Screen Views)
+   ========================================================================== */
+.app-main {
+  flex: 1;
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + var(--space-3xl));
+  scroll-padding-top: calc(var(--header-height) + var(--safe-top) + 16px);
+  scroll-padding-bottom: calc(var(--nav-height) + var(--safe-bottom) + 32px);
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Telas com transição suave */
+.screen-view {
+  display: none;
+  opacity: 0;
+  transform: translateY(6px);
+  padding: var(--space-lg) var(--space-lg) var(--space-2xl);
+  transition: opacity var(--transition-normal), transform var(--transition-normal);
+}
+
+.screen-view.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ==========================================================================
+   Tipografia Base
+   ========================================================================== */
+h1, h2, h3, h4 {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-bold);
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+
+.screen-header {
+  margin-bottom: var(--space-xl);
+}
+
+.screen-title {
+  font-size: var(--font-size-xl);
+  font-weight: var(--font-weight-black);
+  margin-bottom: var(--space-2xs);
+}
+
+.screen-subtitle {
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+}
+
+p {
+  color: var(--text-secondary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+}
+
+/* Classes Utilitárias */
+.hidden {
+  display: none !important;
+}
+
+.text-center {
+  text-align: center;
+}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: var(--radius-pill);
+}

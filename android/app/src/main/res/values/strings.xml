@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">FastFlow</string>
+    <string name="title_activity_main">FastFlow</string>
+    <string name="package_name">com.fastflow.app</string>
+    <string name="custom_url_scheme">com.fastflow.app</string>
+</resources>

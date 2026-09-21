@@ -1,0 +1,17 @@
+{
+  "name": "fastflow-app",
+  "version": "3.0.0",
+  "description": "FastFlow - Jejum Intermitente & GLP-1 Companion",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/prepare-web.js",
+    "cap:sync": "cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/android": "^6.2.2",
+    "@capacitor/core": "^6.2.2"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.2.2"
+  }
+}

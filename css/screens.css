@@ -1,0 +1,834 @@
+/* ==========================================================================
+   FastFlow — Estilos Específicos das 4 Telas
+   ========================================================================== */
+
+/* ==========================================================================
+   TELA 1: HOJE
+   ========================================================================== */
+.today-greeting-block {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-md);
+}
+
+.greeting-subtitle {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.protocol-badge-row {
+  display: flex;
+  gap: 6px;
+}
+
+.protocol-chip, .target-chip {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+}
+
+.protocol-chip {
+  color: var(--accent);
+  border-color: rgba(0, 224, 164, 0.2);
+}
+
+.timer-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-2xl);
+  padding: var(--space-xl) var(--space-lg);
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: var(--space-lg);
+}
+
+.action-buttons-group {
+  margin-bottom: var(--space-lg);
+}
+
+.active-fast-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  width: 100%;
+}
+
+.secondary-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-md);
+}
+
+.card-header-compact {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.card-icon-tag {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-elevated);
+  font-size: 1.25rem;
+}
+
+.card-title-sm {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.card-meta-text {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.secondary-card-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.tag-pill {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-elevated);
+  color: var(--text-secondary);
+}
+
+.fasting-stage-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-elevated) 100%);
+  border-left: 4px solid var(--accent);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.stage-badge {
+  display: inline-block;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+}
+
+.stage-description {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* ==========================================================================
+   TELA 2: HISTÓRICO
+   ========================================================================== */
+.history-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+.history-item-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: transform var(--transition-fast), border-color var(--transition-fast);
+  position: relative;
+  overflow: hidden;
+}
+
+.history-item-card:active {
+  transform: scale(0.99);
+}
+
+.history-item-left {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.history-date {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.history-duration {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-black);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.history-time-range {
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.history-item-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.history-badges {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-bold);
+  padding: 3px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.status-badge.badge-success {
+  background-color: rgba(0, 224, 164, 0.12);
+  color: var(--accent);
+}
+
+.status-badge.badge-warning {
+  background-color: rgba(255, 181, 71, 0.15);
+  color: var(--accent-eating);
+}
+
+.status-badge.badge-record {
+  background-color: rgba(255, 215, 0, 0.18);
+  color: var(--accent-gold);
+}
+
+.history-delete-btn {
+  color: var(--text-muted);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  transition: color var(--transition-fast);
+}
+
+.history-delete-btn:hover {
+  color: var(--danger);
+}
+
+/* Estado Vazio */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: var(--space-3xl) var(--space-lg);
+}
+
+.empty-icon-wrap {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-secondary);
+  border: 1px dashed var(--border-strong);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  margin-bottom: var(--space-md);
+}
+
+.empty-title {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-2xs);
+}
+
+.empty-desc {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  max-width: 260px;
+}
+
+/* ==========================================================================
+   TELA 3: PROGRESSO & ESTATÍSTICAS
+   ========================================================================== */
+.stats-metric-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.metric-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.metric-icon {
+  font-size: 1.5rem;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-elevated);
+  flex-shrink: 0;
+}
+
+.metric-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.metric-value {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-black);
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+
+.metric-label {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+  font-weight: var(--font-weight-medium);
+}
+
+.total-hours-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-elevated) 100%);
+  border-left: 4px solid var(--accent);
+}
+
+.total-hours-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.total-label {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.total-number {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-black);
+  color: var(--text-primary);
+}
+
+.total-badge {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+  background-color: rgba(0, 224, 164, 0.12);
+  color: var(--accent);
+}
+
+.suggestion-card {
+  margin-bottom: var(--space-lg);
+  border: 1px solid rgba(0, 224, 164, 0.3);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 224, 164, 0.05) 100%);
+}
+
+.suggestion-header {
+  margin-bottom: var(--space-xs);
+}
+
+.suggestion-badge {
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-black);
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.suggestion-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.suggestion-desc {
+  font-size: var(--font-size-xs);
+  margin-bottom: var(--space-md);
+  line-height: 1.4;
+}
+
+.suggestion-actions {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+/* Gráficos em Canvas */
+.chart-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.chart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-md);
+}
+
+.chart-title {
+  font-size: var(--font-size-base);
+  font-weight: var(--font-weight-bold);
+}
+
+.chart-subtitle {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.chart-period-selector {
+  display: flex;
+  gap: 4px;
+}
+
+.period-chip {
+  padding: 3px 8px;
+  border-radius: var(--radius-sm);
+  background-color: var(--bg-elevated);
+  font-size: 0.6875rem;
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+  transition: all var(--transition-fast);
+}
+
+.period-chip.active {
+  background-color: var(--accent);
+  color: #0F1115;
+}
+
+.canvas-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.canvas-wrapper canvas {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.heatmap-legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: var(--space-sm);
+  font-size: 0.6875rem;
+  color: var(--text-muted);
+}
+
+.legend-box {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+}
+
+.legend-box.level-0 { background-color: var(--ring-track); }
+.legend-box.level-1 { background-color: rgba(0, 224, 164, 0.35); }
+.legend-box.level-2 { background-color: rgba(0, 224, 164, 0.7); }
+.legend-box.level-3 { background-color: #00E0A4; }
+
+.donut-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  justify-content: center;
+  margin-top: var(--space-md);
+}
+
+.donut-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.donut-legend-color {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+}
+
+/* ==========================================================================
+   TELA 4: AJUSTES
+   ========================================================================== */
+.settings-group {
+  margin-bottom: var(--space-xl);
+}
+
+.settings-group-title {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-xs);
+  padding-left: 4px;
+}
+
+.settings-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+.field-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-secondary);
+}
+
+.custom-protocol-inputs {
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  border: 1px solid var(--border-strong);
+}
+
+.input-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-sm);
+}
+
+.input-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.input-field label {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.setting-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-md);
+  padding: var(--space-xs) 0;
+}
+
+.setting-row:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.setting-text {
+  display: flex;
+  flex-direction: column;
+}
+
+.setting-name {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  color: var(--text-primary);
+}
+
+.setting-desc {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.sub-settings-panel {
+  display: flex;
+  flex-direction: column;
+  padding-left: var(--space-md);
+  border-left: 2px solid var(--border-strong);
+  margin-top: -4px;
+}
+
+.setting-actions-row {
+  padding-top: var(--space-sm);
+  justify-content: flex-start;
+}
+
+.theme-options-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-xs);
+}
+
+.theme-option-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: var(--space-md) var(--space-xs);
+  border-radius: var(--radius-lg);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  transition: all var(--transition-fast);
+}
+
+.theme-option-card .theme-icon {
+  font-size: 1.5rem;
+}
+
+.theme-option-card .theme-label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-secondary);
+}
+
+.theme-option-card.active {
+  border-color: var(--accent);
+  background-color: rgba(0, 224, 164, 0.1);
+}
+
+.theme-option-card.active .theme-label {
+  color: var(--accent);
+}
+
+.button-stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+.install-pwa-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  padding: var(--space-md);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(135deg, rgba(0, 224, 164, 0.15) 0%, rgba(0, 224, 164, 0.05) 100%);
+  border: 1px solid var(--accent);
+  margin-bottom: var(--space-sm);
+}
+
+.install-pwa-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.install-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.install-desc {
+  font-size: 0.6875rem;
+  color: var(--text-secondary);
+}
+
+.about-info-row {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--space-xs) 0;
+  font-size: var(--font-size-xs);
+}
+
+.about-info-row:not(:last-child) {
+  border-bottom: 1px solid var(--border);
+}
+
+.about-label {
+  color: var(--text-secondary);
+}
+
+.about-val {
+  color: var(--text-primary);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* ==========================================================================
+   ESTILOS ESPECÍFICOS DO MÓDULO GLP-1 (FASTFLOW v2.0)
+   ========================================================================== */
+
+/* 1. Card GLP-1 Companion (Tela Hoje) */
+.glp1-companion-card {
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 198, 255, 0.06) 100%);
+  border: 1px solid rgba(0, 198, 255, 0.25);
+  border-left: 4px solid var(--accent-glp1);
+  margin-bottom: var(--space-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.glp1-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--space-xs);
+}
+
+.glp1-card-title {
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+  color: var(--text-primary);
+}
+
+.glp1-card-meta {
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+}
+
+.glp1-countdown-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: var(--space-xs) 0 var(--space-sm);
+}
+
+.glp1-countdown-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-bold);
+  color: var(--accent-glp1);
+  background: var(--accent-glp1-surface);
+  padding: 4px 10px;
+  border-radius: var(--radius-pill);
+}
+
+.glp1-site-suggestion {
+  font-size: var(--font-size-xs);
+  color: var(--text-muted);
+}
+
+.glp1-card-actions {
+  display: flex;
+  gap: var(--space-xs);
+  margin-top: var(--space-xs);
+}
+
+/* 2. Widget de Hidratação Interativa (Tela Hoje) */
+.water-tracker-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-md);
+  margin-bottom: var(--space-md);
+}
+
+.water-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-xs);
+}
+
+.water-title-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-bold);
+}
+
+.water-stats-text {
+  font-size: var(--font-size-xs);
+  color: var(--accent-glp1);
+  font-weight: var(--font-weight-semibold);
+  font-variant-numeric: tabular-nums;
+}
+
+.water-progress-track {
+  height: 8px;
+  width: 100%;
+  background-color: var(--bg-elevated);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-bottom: var(--space-sm);
+}
+
+.water-progress-fill {
+  height: 100%;
+  width: 0%;
+  background: linear-gradient(90deg, var(--accent-glp1) 0%, #00FFA8 100%);
+  border-radius: var(--radius-pill);
+  transition: width 0.3s ease;
+}
+
+.water-controls-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xs);
+}
+
+.water-btn-add {
+  flex: 1;
+  height: 40px;
+  font-size: var(--font-size-xs);
+}
+
+.water-btn-sub {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-pill);
+  background-color: var(--bg-elevated);
+  border: 1px solid var(--border);
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+/* 3. Card de Peso (Tela Progresso) */
+.weight-card-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-lg);
+  background: linear-gradient(135deg, var(--bg-secondary) 0%, rgba(0, 198, 255, 0.05) 100%);
+  border-left: 4px solid var(--accent-glp1);
+}
+
+.weight-banner-val {
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-black);
+  color: var(--text-primary);
+}
+
+/* 4. Linha do Tempo de Injeções (Histórico) */
+.injection-history-item {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent-glp1);
+  border-radius: var(--radius-lg);
+  padding: var(--space-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
