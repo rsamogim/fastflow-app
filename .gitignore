@@ -8,3 +8,4 @@ android/.gradle/
 local.properties
 .playwright-mcp/
 *.log
+apk-output/
